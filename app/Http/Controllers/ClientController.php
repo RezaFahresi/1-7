@@ -134,7 +134,7 @@ class ClientController extends Controller
             'old_password' => 'required',
             'new_password' => 'required|confirmed'
         ]);
-
+ 
         if (!Hash::check($request->old_password,$client->password)) {
             $notification = array(
                 'message' => 'Old Password Does not Match!',
@@ -154,6 +154,24 @@ class ClientController extends Controller
             return back()->with($notification);
      }
       // End Method 
+
+      // Contoh di ClientController.php
+      public function index()
+      {
+          // Pastikan pengguna sudah login
+          $user = Auth::user();
+      
+          if (!$user) {
+              // Redirect ke halaman login jika user belum login
+              return redirect()->route('login');
+          }
+      
+          // Ambil data pengguna yang sedang login
+          $profileData = $user;
+      
+          // Kirimkan data ke view
+          return view('client.dashboard', compact('profileData'));
+      }
 
 
 }
