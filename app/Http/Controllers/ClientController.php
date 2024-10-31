@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash; 
 use App\Models\Client;
+use App\Models\City;
 
 class ClientController extends Controller
 {
@@ -75,12 +76,13 @@ class ClientController extends Controller
     // End Method 
 
     public function ClientProfile(){
+        $city = City::latest()->get();
         $id = Auth::guard('client')->id();
         $profileData = Client::find($id);
-        return view('client.client_profile',compact('profileData'));
+        return view('client.client_profile',compact('profileData','city'));
      }
       // End Method 
-
+ 
       public function ClientProfileStore(Request $request){
         $id = Auth::guard('client')->id();
         $data = Client::find($id);
@@ -88,7 +90,9 @@ class ClientController extends Controller
         $data->name = $request->name;
         $data->email = $request->email;
         $data->phone = $request->phone;
-        $data->address = $request->address; 
+        $data->address = $request->address;
+        $data->city_id = $request->city_id;
+        $data->shop_info = $request->shop_info; 
 
         $oldPhotoPath = $data->photo;
 
@@ -103,6 +107,14 @@ class ClientController extends Controller
            }
 
         }
+
+        if ($request->hasFile('cover_photo')) {
+            $file1 = $request->file('cover_photo');
+            $filename1 = time().'.'.$file1->getClientOriginalExtension();
+            $file1->move(public_path('upload/client_images'),$filename1);
+            $data->cover_photo = $filename1; 
+         }
+
         $data->save();
 
         $notification = array(
@@ -154,24 +166,6 @@ class ClientController extends Controller
             return back()->with($notification);
      }
       // End Method 
-
-      // Contoh di ClientController.php
-      public function index()
-      {
-          // Pastikan pengguna sudah login
-          $user = Auth::user();
-      
-          if (!$user) {
-              // Redirect ke halaman login jika user belum login
-              return redirect()->route('login');
-          }
-      
-          // Ambil data pengguna yang sedang login
-          $profileData = $user;
-      
-          // Kirimkan data ke view
-          return view('client.dashboard', compact('profileData'));
-      }
 
 
 }

@@ -12,7 +12,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <a href="{{ route('add.menu') }}" class="btn btn-primary waves-effect waves-light">Add Gallery</a>
+                            <a href="{{ route('add.gallery') }}" class="btn btn-primary waves-effect waves-light">Add Gallery</a>
                         </ol>
                     </div>
 
@@ -42,8 +42,8 @@
             <tr>
                 <td>{{ $key+1 }}</td> 
                 <td><img src="{{ asset($item->gallery_img) }}" alt="" style="width: 70px; height:40px;"></td>
-                <td><a href="{{ route('edit.menu',$item->id) }}" class="btn btn-info waves-effect waves-light">Edit</a>
-                <a href="{{ route('delete.menu',$item->id) }}" class="btn btn-danger waves-effect waves-light" id="delete">Delete</a>
+                <td><a href="{{ route('edit.gallery',$item->id) }}" class="btn btn-info waves-effect waves-light">Edit</a>
+                <a href="{{ route('delete.gallery',$item->id) }}" class="btn btn-danger waves-effect waves-light" id="delete">Delete</a>
                 </td> 
             </tr>
             @endforeach    

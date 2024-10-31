@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Client;
-
+ 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
@@ -18,7 +18,8 @@ use App\Models\Gllery;
 class RestaurantController extends Controller
 {
     public function AllMenu(){
-        $menu = Menu::latest()->get();
+        $id = Auth::guard('client')->id();
+        $menu = Menu::where('client_id',$id)->orderBy('id','desc')->get();
         return view('client.backend.menu.all_menu', compact('menu'));
     } 
     // End Method 
@@ -41,7 +42,8 @@ class RestaurantController extends Controller
 
             Menu::create([
                 'menu_name' => $request->menu_name,
-                'image' => $save_url, 
+                'client_id' => Auth::guard('client')->id(),
+                'image' => $save_url,  
             ]); 
         } 
 
@@ -120,15 +122,17 @@ class RestaurantController extends Controller
     ////// All Product Method started 
 
     public function AllProduct(){
-        $product = Product::latest()->get();
+        $id = Auth::guard('client')->id();
+        $product = Product::where('client_id',$id)->orderBy('id','desc')->get();
         return view('client.backend.product.all_product', compact('product'));
     } 
     // End Method 
 
     public function AddProduct(){
+        $id = Auth::guard('client')->id();
         $category = Category::latest()->get();
         $city = City::latest()->get();
-        $menu = Menu::latest()->get();
+        $menu = Menu::where('client_id',$id)->latest()->get();
         return view('client.backend.product.add_product', compact('category','city','menu'));
     } 
     // End Method 
@@ -176,9 +180,10 @@ class RestaurantController extends Controller
     // End Method 
 
     public function EditProduct($id){
+        $cid = Auth::guard('client')->id();
         $category = Category::latest()->get();
         $city = City::latest()->get();
-        $menu = Menu::latest()->get();
+        $menu = Menu::where('client_id',$cid)->latest()->get();
         $product = Product::find($id);
         return view('client.backend.product.edit_product', compact('category','city','menu','product'));
     } 
@@ -276,11 +281,107 @@ class RestaurantController extends Controller
      /////////// All Gallery Method Start 
 
      public function AllGallery(){
-        $gallery = Gllery::latest()->get();
+        $cid = Auth::guard('client')->id();
+        $gallery = Gllery::where('client_id',$cid)->latest()->get();
         return view('client.backend.gallery.all_gallery', compact('gallery'));
     } 
     // End Method 
 
+    public function AddGallery(){ 
+        return view('client.backend.gallery.add_gallery' );
+    } 
+    // End Method 
 
+    public function StoreGallery(Request $request){
+
+        $images = $request->file('gallery_img');
+
+        foreach ($images as $gimg) {
+
+            $manager = new ImageManager(new Driver());
+            $name_gen = hexdec(uniqid()).'.'.$gimg->getClientOriginalExtension();
+            $img = $manager->read($gimg);
+            $img->resize(500,500)->save(public_path('upload/gallery/'.$name_gen));
+            $save_url = 'upload/gallery/'.$name_gen;
+
+            Gllery::insert([
+                'client_id' => Auth::guard('client')->id(),
+                'gallery_img' => $save_url,
+            ]); 
+        } // end foreach
+
+        $notification = array(
+            'message' => 'Gallery Inserted Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.gallery')->with($notification);
+
+    }
+     // End Method 
+
+     public function EditGallery($id){
+        $gallery = Gllery::find($id);
+        return view('client.backend.gallery.edit_gallery',compact('gallery'));
+     }
+     // End Method 
+
+     public function UpdateGallery(Request $request){
+
+        $gallery_id = $request->id;
+
+        if ($request->hasFile('gallery_img')) {
+            $image = $request->file('gallery_img');
+            $manager = new ImageManager(new Driver());
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            $img = $manager->read($image);
+            $img->resize(500,500)->save(public_path('upload/gallery/'.$name_gen));
+            $save_url = 'upload/gallery/'.$name_gen;
+
+            $gallery = Gllery::find($gallery_id);
+            if ($gallery->gallery_img) {
+                $img = $gallery->gallery_img;
+                unlink($img);
+            }
+
+            $gallery->update([
+                'gallery_img' => $save_url,
+            ]);
+ 
+            $notification = array(
+                'message' => 'Menu Updated Successfully',
+                'alert-type' => 'success'
+            );
+    
+            return redirect()->route('all.gallery')->with($notification);
+
+        } else {
+
+            $notification = array(
+                'message' => 'No Image Selected for Update',
+                'alert-type' => 'warning'
+            );
+    
+            return redirect()->back()->with($notification); 
+        } 
+    }
+    // End Method 
+
+    public function DeleteGallery($id){
+        $item = Gllery::find($id);
+        $img = $item->gallery_img;
+        unlink($img);
+
+        Gllery::find($id)->delete();
+
+        $notification = array(
+            'message' => 'Gallery Delete Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
+
+    }
+    // End Method 
 
 }
