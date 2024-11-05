@@ -8,7 +8,7 @@
                         <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="24">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="24"> <span class="logo-txt">Client</span>
+                        <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="24"> <span class="logo-txt">Admin</span>
                     </span>
                 </a>
 
@@ -17,7 +17,7 @@
                         <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="24">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="24"> <span class="logo-txt">Client</span>
+                        <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="24"> <span class="logo-txt">Admin</span>
                     </span>
                 </a>
             </div>
@@ -160,8 +160,8 @@
             </div>
 
             @php
-                 $id = Auth::guard('client')->id();
-                 $profileData = App\Models\Client::find($id);
+                 $id = Auth::guard('admin')->id();
+                 $profileData = App\Models\Admin::find($id);
             @endphp
 
             <div class="dropdown d-inline-block">
