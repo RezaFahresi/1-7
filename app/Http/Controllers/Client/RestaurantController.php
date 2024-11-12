@@ -43,7 +43,7 @@ class RestaurantController extends Controller
             Menu::create([
                 'menu_name' => $request->menu_name,
                 'client_id' => Auth::guard('client')->id(),
-                'image' => $save_url,  
+                'image' => $save_url, 
             ]); 
         } 
 

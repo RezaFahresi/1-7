@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Client\RestaurantController;
 use App\Http\Controllers\Client\CouponController;
+use App\Http\Controllers\Admin\ManageController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -87,6 +88,21 @@ Route::middleware('admin')->group(function () {
         Route::post('/update/city', 'UpdateCity')->name('city.update');
         Route::get('/delete/city/{id}', 'DeleteCity')->name('delete.city');
     });
+
+    Route::controller(ManageController::class)->group(function(){
+        Route::get('/admin/all/product', 'AdminAllProduct')->name('admin.all.product');
+        Route::get('/admin/add/product', 'AdminAddProduct')->name('admin.add.product');
+        Route::post('/admin/store/product', 'AdminStoreProduct')->name('admin.product.store');
+        Route::get('/admin/edit/product/{id}', 'AdminEditProduct')->name('admin.edit.product');
+        Route::post('/admin/update/product', 'AdminUpdateProduct')->name('admin.product.update');
+        Route::get('/admin/delete/product/{id}', 'AdminDeleteProduct')->name('admin.delete.product');
+       
+    });
+
+    Route::controller(ManageController::class)->group(function(){
+        Route::get('/pending/restaurant', 'PendingRestaurant')->name('pending.restaurant'); 
+       
+    });
  
     
 }); // End Admin Middleware
@@ -109,7 +125,7 @@ Route::middleware('client')->group(function () {
         Route::get('/edit/product/{id}', 'EditProduct')->name('edit.product');
         Route::post('/update/product', 'UpdateProduct')->name('product.update');
         Route::get('/delete/product/{id}', 'DeleteProduct')->name('delete.product');
-        Route::get('/changeStatus', 'ChangeStatus');
+        
     });
 
     Route::controller(RestaurantController::class)->group(function(){
@@ -135,3 +151,6 @@ Route::middleware('client')->group(function () {
     
 });
  // End Client Middleware
+
+ /// That will be for all user 
+ Route::get('/changeStatus', [RestaurantController::class, 'ChangeStatus']);
