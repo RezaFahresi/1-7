@@ -11,6 +11,8 @@ use App\Http\Controllers\Client\CouponController;
 use App\Http\Controllers\Admin\ManageController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\OrderController;
+use App\Http\Controllers\Admin\ManageOrderController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -33,6 +35,13 @@ Route::middleware('auth')->group(function () {
     // Get Wishlist data for user 
     Route::get('/all/wishlist', [HomeController::class, 'AllWishlist'])->name('all.wishlist');
     Route::get('/remove/wishlist/{id}', [HomeController::class, 'RemoveWishlist'])->name('remove.wishlist');
+
+    Route::controller(ManageOrderController::class)->group(function(){
+        Route::get('/user/order/list', 'UserOrderList')->name('user.order.list'); 
+        Route::get('/user/order/details/{id}', 'UserOrderDetails')->name('user.order.details');
+        Route::get('/user/invoice/download/{id}', 'UserInvoiceDownload')->name('user.invoice.download'); 
+        
+    });
    
 });
 
@@ -119,6 +128,22 @@ Route::middleware('admin')->group(function () {
         Route::post('/banner/update', 'BannerUpdate')->name('banner.update'); 
         Route::get('/delete/banner/{id}', 'DeleteBanner')->name('delete.banner'); 
     });
+
+    Route::controller(ManageOrderController::class)->group(function(){
+        Route::get('/pending/order', 'PendingOrder')->name('pending.order'); 
+        Route::get('/confirm/order', 'ConfirmOrder')->name('confirm.order'); 
+        Route::get('/processing/order', 'ProcessingOrder')->name('processing.order'); 
+        Route::get('/deliverd/order', 'DeliverdOrder')->name('deliverd.order'); 
+
+        Route::get('/admin/order/details/{id}', 'AdminOrderDetails')->name('admin.order.details');  
+    });
+
+    Route::controller(ManageOrderController::class)->group(function(){
+        Route::get('/pening_to_confirm/{id}', 'PendingToConfirm')->name('pening_to_confirm');
+        Route::get('/confirm_to_processing/{id}', 'ConfirmToProcessing')->name('confirm_to_processing'); 
+        Route::get('/processing_to_deliverd/{id}', 'ProcessingToDiliverd')->name('processing_to_deliverd'); 
+        
+    });
  
     
 }); // End Admin Middleware
@@ -164,6 +189,11 @@ Route::middleware(['client','status'])->group(function () {
         
     });
     
+    Route::controller(ManageOrderController::class)->group(function(){
+        Route::get('/all/client/orders', 'AllClientOrders')->name('all.client.orders'); 
+        Route::get('/client/order/details/{id}', 'ClientOrderDetails')->name('client.order.details'); 
+    });
+
     
 });
  // End Client Middleware
@@ -183,4 +213,10 @@ Route::controller(CartController::class)->group(function(){
     Route::post('/cart/remove', 'CartRemove')->name('cart.remove');  
     Route::post('/apply-coupon', 'ApplyCoupon');
     Route::get('/remove-coupon', 'CouponRemove');
+    Route::get('/checkout', 'ShopCheckout')->name('checkout');
+});
+
+Route::controller(OrderController::class)->group(function(){
+    Route::post('/cash_order', 'CashOrder')->name('cash_order');
+   
 });
