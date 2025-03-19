@@ -12,7 +12,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                           
+                            
                         </ol>
                     </div>
 
@@ -46,7 +46,7 @@
            @foreach ($orderItemGroupData as $orderGroup) 
            @foreach ($orderGroup as $item) 
             <tr>
-                <td>{{ $key+1 }}</td>
+                <td>{{ $key }}</td>
                 <td>{{ $item->order->order_date }}</td>
                 <td>{{ $item->order->invoice_no }}</td>
                 <td>{{ $item->order->amount }}</td>
@@ -58,7 +58,7 @@
 
                 </td> 
             </tr>
-            @break
+            @php $key++; @endphp
             @endforeach 
             @endforeach    
             
@@ -76,6 +76,5 @@
 
  
    
-
 
 @endsection

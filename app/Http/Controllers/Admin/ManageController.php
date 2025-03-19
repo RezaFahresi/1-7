@@ -21,6 +21,10 @@ class ManageController extends Controller
 {
     public function AdminAllProduct(){ 
         $product = Product::orderBy('id','desc')->get();
+        /*echo "<pre>";
+        print_r($product);
+        echo "</pre>";*/
+        
         return view('admin.backend.product.all_product', compact('product'));
     } 
     // End Method 

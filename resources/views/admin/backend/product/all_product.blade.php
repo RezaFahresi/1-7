@@ -60,7 +60,8 @@
             @else
             @php
                 $amount = $item->price - $item->discount_price;
-                $discount = ($amount / $item->price) * 100; 
+                $discount = ($amount / $item->price) * 100;
+                //$discount=0; 
             @endphp 
              <span class="badge bg-danger">{{ round($discount) }}%</span>
         @endif </td>

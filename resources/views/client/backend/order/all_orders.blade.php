@@ -1,4 +1,3 @@
-
 @extends('client.client_dashboard')
 @section('client')
 
@@ -43,13 +42,13 @@
 
 
             <tbody>
-           @foreach ($orderItemGroupData as $key=> $orderitem)
+           @foreach ($orderItemGroupData as $key => $orderitem)
            @php
                $firstItem = $orderitem->first();
                $order = $firstItem->order;
            @endphp  
             <tr>
-                <td>{{ $key+1 }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $order->order_date }}</td>
                 <td>{{ $order->invoice_no }}</td>
                 <td>${{ $order->amount }}</td>
@@ -87,6 +86,5 @@
 
  
    
-
 
 @endsection
